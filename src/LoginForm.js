@@ -1,5 +1,9 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+
+// Actions
+import * as actionCreators from "./store/actions";
 
 class Login extends Component {
   constructor(props) {
@@ -20,12 +24,14 @@ class Login extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    alert("I DON'T WORK YET");
+    this.props.login(this.state, this.props.history);
   }
 
   render() {
     const { username, password } = this.state;
-
+    if (this.props.user) {
+      return <Redirect to="/" />;
+    }
     return (
       <div className="col-6 mx-auto">
         <div className="card my-5">
@@ -55,7 +61,6 @@ class Login extends Component {
                   onChange={this.handleChange}
                 />
               </div>
-
               <button type="submit" className="btn btn-primary">
                 Login
               </button>
@@ -70,4 +75,16 @@ class Login extends Component {
   }
 }
 
-export default Login;
+const mapStateToProps = state => ({
+  user: state.rootAuth.user
+});
+
+const mapDispatchToProps = dispatch => ({
+  login: (userData, history) =>
+    dispatch(actionCreators.login(userData, history))
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Login);

@@ -1,8 +1,13 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import { NavLink, Link } from "react-router-dom";
 
 // Logo
 import logo from "./assets/theindex.svg";
+
+//buttons
+import NavLogin from "./NavLogin";
+import Logout from "./logout";
 
 class Sidebar extends Component {
   render() {
@@ -14,17 +19,14 @@ class Sidebar extends Component {
             <NavLink to="/authors">AUTHORS</NavLink>
           </h4>
         </section>
-        <div className="fixed-bottom">
-          <Link to="/login" className="btn btn-info m-2 float-left">
-            Login
-          </Link>
-          <Link to="/signup" className="btn btn-success m-2 float-left">
-            Signup
-          </Link>
-        </div>
+        {this.props.user ? <Logout /> : <NavLogin />}
       </div>
     );
   }
 }
 
-export default Sidebar;
+const mapStateToProps = state => ({
+  user: state.rootAuth.user
+});
+
+export default connect(mapStateToProps)(Sidebar);

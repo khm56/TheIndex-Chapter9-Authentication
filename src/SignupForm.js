@@ -1,5 +1,10 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
+
+import { connect } from "react-redux";
+
+// Actions
+import * as actionCreators from "./store/actions";
 
 class Signup extends Component {
   constructor(props) {
@@ -21,12 +26,14 @@ class Signup extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    alert("I DON'T WORK YET");
+    this.props.signup(this.state, this.props.history);
   }
 
   render() {
     const { username, email, password } = this.state;
-
+    if (this.props.user) {
+      return <Redirect to="/" />;
+    }
     return (
       <div className="col-6 mx-auto">
         <div className="card my-5">
@@ -83,4 +90,16 @@ class Signup extends Component {
   }
 }
 
-export default Signup;
+const mapStateToProps = state => ({
+  user: state.rootAuth.user
+});
+
+const mapDispatchToProps = dispatch => ({
+  signup: (userData, history) =>
+    dispatch(actionCreators.signup(userData, history))
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Signup);
